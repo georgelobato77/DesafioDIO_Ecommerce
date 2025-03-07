@@ -1,0 +1,203 @@
+CREATE DATABASE ecommerce;
+USE ecommerce;
+
+-- Criação da tabela Cliente com colunas para armazenar informações do cliente
+CREATE TABLE Cliente (
+    idCliente INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    PNome VARCHAR(45) NOT NULL, -- Primeiro nome do cliente (não nulo)
+    MNome VARCHAR(45) NOT NULL, -- Nome do meio do cliente (não nulo)
+    FNome VARCHAR(45) NOT NULL, -- Sobrenome do cliente (não nulo)
+    CPF VARCHAR(11) UNIQUE, -- CPF do cliente (único)
+    CNPJ VARCHAR(14) UNIQUE, -- CNPJ do cliente (único)
+    Endereço VARCHAR(45) NOT NULL, -- Endereço do cliente (não nulo)
+    Bairro VARCHAR(45) NOT NULL, -- Bairro do cliente (não nulo)
+    Cidade VARCHAR(45) NOT NULL, -- Cidade do cliente (não nulo)
+    Fone VARCHAR(45) NOT NULL UNIQUE, -- Telefone do cliente (não nulo e único)
+    Email VARCHAR(45) NOT NULL UNIQUE, -- Email do cliente (não nulo e único)
+    Tipo ENUM('PF', 'PJ') NOT NULL, -- Tipo de cliente (PF ou PJ)
+    CONSTRAINT chk_tipo CHECK (
+        (Tipo = 'PF' AND CPF IS NOT NULL AND CNPJ IS NULL) OR
+        (Tipo = 'PJ' AND CNPJ IS NOT NULL AND CPF IS NULL)
+    ) -- Restrição para garantir que apenas uma das colunas (CPF ou CNPJ) seja preenchida
+);
+
+-- Inserindo registros fictícios na tabela Cliente
+INSERT INTO Cliente (PNome, MNome, FNome, CPF, CNPJ, Endereço, Bairro, Cidade, Fone, Email, Tipo) VALUES
+('João', 'Silva', 'Santos', '12345678901', NULL, 'Rua A, 123', 'Centro', 'São Paulo', '11987654321', 'joao.santos@example.com', 'PF'),
+('Maria', 'Oliveira', 'Costa', '23456789012', NULL, 'Rua B, 456', 'Jardim', 'Rio de Janeiro', '21987654321', 'maria.costa@example.com', 'PF'),
+('Pedro', 'Almeida', 'Souza', '34567890123', NULL, 'Rua C, 789', 'Vila', 'Belo Horizonte', '31987654321', 'pedro.souza@example.com', 'PF'),
+('Ana', 'Pereira', 'Lima', '45678901234', NULL, 'Rua D, 101', 'Centro', 'Curitiba', '41987654321', 'ana.lima@example.com', 'PF'),
+('Lucas', 'Fernandes', 'Gomes', '56789012345', NULL, 'Rua E, 202', 'Bairro', 'Porto Alegre', '51987654321', 'lucas.gomes@example.com', 'PF'),
+('Carlos', 'Mendes', 'Silva', '67890123456', NULL, 'Rua F, 303', 'Centro', 'São Paulo', '11987654322', 'carlos.silva@example.com', 'PF'),
+('Fernanda', 'Martins', 'Oliveira', '78901234567', NULL, 'Rua G, 404', 'Jardim', 'Rio de Janeiro', '21987654322', 'fernanda.oliveira@example.com', 'PF'),
+('Rafael', 'Gonçalves', 'Almeida', '89012345678', NULL, 'Rua H, 505', 'Vila', 'Belo Horizonte', '31987654322', 'rafael.almeida@example.com', 'PF'),
+('Juliana', 'Barbosa', 'Pereira', '90123456789', NULL, 'Rua I, 606', 'Centro', 'Curitiba', '41987654322', 'juliana.pereira@example.com', 'PF'),
+('Marcos', 'Santos', 'Fernandes', '01234567890', NULL, 'Rua J, 707', 'Bairro', 'Porto Alegre', '51987654322', 'marcos.fernandes@example.com', 'PF'),
+('Paula', 'Silva', 'Mendes', '11234567890', NULL, 'Rua K, 808', 'Centro', 'São Paulo', '11987654323', 'paula.mendes@example.com', 'PF'),
+('Bruno', 'Costa', 'Oliveira', '22345678901', NULL, 'Rua L, 909', 'Jardim', 'Rio de Janeiro', '21987654323', 'bruno.oliveira@example.com', 'PF'),
+('Carla', 'Souza', 'Almeida', '33456789012', NULL, 'Rua M, 1010', 'Vila', 'Belo Horizonte', '31987654323', 'carla.almeida@example.com', 'PF'),
+('Renato', 'Lima', 'Pereira', '44567890123', NULL, 'Rua N, 1111', 'Centro', 'Curitiba', '41987654323', 'renato.pereira@example.com', 'PF'),
+('Bianca', 'Gomes', 'Fernandes', '55678901234', NULL, 'Rua O, 1212', 'Bairro', 'Porto Alegre', '51987654323', 'bianca.fernandes@example.com', 'PF'),
+('Empresa', 'A', 'LTDA', NULL, '12345678000101', 'Av. Empresa A, 1000', 'Centro', 'São Paulo', '1134567890', 'contato@empresaA.com', 'PJ'),
+('Empresa', 'B', 'LTDA', NULL, '23456789000102', 'Av. Empresa B, 2000', 'Jardim', 'Rio de Janeiro', '2134567890', 'contato@empresaB.com', 'PJ'),
+('Empresa', 'C', 'LTDA', NULL, '34567890000103', 'Av. Empresa C, 3000', 'Vila', 'Belo Horizonte', '3134567890', 'contato@empresaC.com', 'PJ'),
+('Empresa', 'D', 'LTDA', NULL, '45678900000104', 'Av. Empresa D, 4000', 'Centro', 'Curitiba', '4134567890', 'contato@empresaD.com', 'PJ'),
+('Empresa', 'E', 'LTDA', NULL, '56789000000105', 'Av. Empresa E, 5000', 'Bairro', 'Porto Alegre', '5134567890', 'contato@empresaE.com', 'PJ');
+
+
+-- Criação da tabela Pagamento com colunas para armazenar as formas de pagamento
+CREATE TABLE Pagamento (
+    idPagamento INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Forma_Pagamento ENUM('Cartão de Crédito', 'Boleto', 'Pix') NOT NULL -- Forma de pagamento
+);
+
+-- Inserindo registros fictícios na tabela Pagamento
+INSERT INTO Pagamento (Forma_Pagamento) VALUES
+('Cartão de Crédito'),
+('Boleto'),
+('Pix');
+
+-- Criação da tabela Pedido com colunas para armazenar informações do pedido
+CREATE TABLE Pedido (
+    idPedido INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Status_do_pedido ENUM('Aguardando pagamento', 'Processando', 'Enviado', 'Entregue','Cancelado') NOT NULL, -- Status do pedido
+    Data_do_pedido DATE NOT NULL, -- Data do pedido
+    Descrição VARCHAR(45), -- Descrição do pedido
+    Cliente_idCliente INT, -- Chave estrangeira referenciando Cliente
+    Frete FLOAT, -- Valor do frete
+    Produto_idProduto INT, -- Chave estrangeira referenciando Produto
+    Quantidade INT, -- Quantidade de produtos no pedido
+    Codigo_Rastreio CHAR(5) UNIQUE NOT NULL, -- Código de rastreio (único e não nulo)
+    Status_Entrega ENUM('Em processamento', 'Enviado', 'Entregue') NOT NULL, -- Status da entrega
+    Pagamento_idPagamento INT, -- Chave estrangeira referenciando Pagamento
+    FOREIGN KEY (Cliente_idCliente) REFERENCES Cliente(idCliente), -- Definição da chave estrangeira
+    FOREIGN KEY (Produto_idProduto) REFERENCES Produto(idProduto), -- Definição da chave estrangeira
+    FOREIGN KEY (Pagamento_idPagamento) REFERENCES Pagamento(idPagamento) -- Definição da chave estrangeira
+);
+
+ALTER TABLE Pedido ADD COLUMN Vendedor_idVendedor INT;
+
+ALTER TABLE Pedido 
+ADD CONSTRAINT fk_vendedor_pedido 
+FOREIGN KEY (Vendedor_idVendedor) REFERENCES Vendedor(idVendedor);
+
+INSERT INTO Pedido (Status_do_pedido, Data_do_pedido, Descrição, Cliente_idCliente, Frete, Produto_idProduto, Quantidade, Codigo_Rastreio, Status_Entrega, Pagamento_idPagamento, Vendedor_idVendedor)
+VALUES 
+('Aguardando pagamento', '2025-03-01', 'Pedido de teste 1', 1, 15.00, 2, 1, 'ABC01', 'Em processamento', 1, 1),
+('Processando', '2025-03-02', 'Pedido de teste 2', 2, 20.00, 3, 2, 'DEF02', 'Enviado', 2, 1),
+('Entregue', '2025-03-03', 'Pedido de teste 3', 3, 25.00, 4, 1, 'GHI03', 'Entregue', 3, 1),
+('Cancelado', '2025-03-04', 'Pedido de teste 4', 4, 10.00, 5, 3, 'JKL04', 'Em processamento', 1, 1),
+('Aguardando pagamento', '2025-03-05', 'Pedido de teste 5', 5, 12.50, 1, 2, 'MNO05', 'Enviado', 2, 1),
+('Processando', '2025-03-06', 'Pedido de teste 6', 6, 18.00, 2, 1, 'PQR06', 'Entregue', 3, 1),
+('Entregue', '2025-03-07', 'Pedido de teste 7', 7, 22.00, 3, 2, 'STU07', 'Enviado', 1, 1),
+('Enviado', '2025-03-08', 'Pedido de teste 8', 8, 17.00, 4, 1, 'VWX08', 'Entregue', 2, 1),
+('Aguardando pagamento', '2025-03-09', 'Pedido de teste 9', 9, 15.00, 5, 1, 'YZA09', 'Em processamento', 3, 2),
+('Processando', '2025-03-10', 'Pedido de teste 10', 10, 20.00, 1, 2, 'BCD10', 'Enviado', 1, 2),
+('Entregue', '2025-03-11', 'Pedido de teste 11', 11, 25.00, 2, 3, 'EFG11', 'Entregue', 2, 2),
+('Enviado', '2025-03-12', 'Pedido de teste 12', 12, 10.00, 3, 1, 'HIJ12', 'Enviado', 3, 2),
+('Cancelado', '2025-03-13', 'Pedido de teste 13', 13, 12.50, 4, 2, 'KLM13', 'Em processamento', 1, 2),
+('Aguardando pagamento', '2025-03-14', 'Pedido de teste 14', 14, 18.00, 5, 1, 'NOP14', 'Entregue', 2, 2),
+('Entregue', '2025-03-15', 'Pedido de teste 15', 15, 22.00, 1, 2, 'QRS15', 'Enviado', 3, 3),
+('Processando', '2025-03-16', 'Pedido de teste 16', 1, 17.00, 2, 1, 'TUV16', 'Entregue', 1, 3),
+('Aguardando pagamento', '2025-03-17', 'Pedido de teste 17', 2, 15.00, 3, 3, 'WXY17', 'Em processamento', 2, 3),
+('Cancelado', '2025-03-18', 'Pedido de teste 18', 3, 20.00, 4, 2, 'ZAB18', 'Enviado', 3, 3),
+('Enviado', '2025-03-19', 'Pedido de teste 19', 4, 25.00, 5, 1, 'CDE19', 'Entregue', 1, 3),
+('Aguardando pagamento', '2025-03-20', 'Pedido de teste 20', 5, 10.00, 1, 2, 'FGH20', 'Enviado', 2, 4),
+('Entregue', '2025-03-21', 'Pedido de teste 21', 6, 12.50, 2, 1, 'IJK21', 'Em processamento', 3, 4),
+('Cancelado', '2025-03-22', 'Pedido de teste 22', 7, 18.00, 3, 3, 'LMN22', 'Entregue', 1, 4),
+('Processando', '2025-03-23', 'Pedido de teste 23', 8, 22.00, 4, 2, 'OPQ23', 'Enviado', 2, 4),
+('Aguardando pagamento', '2025-03-24', 'Pedido de teste 24', 9, 17.00, 5, 1, 'RST24', 'Em processamento', 3, 4),
+('Enviado', '2025-03-25', 'Pedido de teste 25', 10, 15.00, 1, 3, 'UVW25', 'Entregue', 1, 4),
+('Entregue', '2025-03-26', 'Pedido de teste 26', 11, 20.00, 2, 1, 'XYZ26', 'Enviado', 2, 4),
+('Aguardando pagamento', '2025-03-27', 'Pedido de teste 27', 12, 25.00, 3, 2, 'ABC27', 'Entregue', 3, 5),
+('Cancelado', '2025-03-28', 'Pedido de teste 28', 13, 10.00, 4, 1, 'DEF28', 'Em processamento', 1, 5),
+('Enviado', '2025-03-29', 'Pedido de teste 29', 14, 12.50, 5, 3, 'GHI29', 'Enviado', 2, 5),
+('Processando', '2025-03-30', 'Pedido de teste 30', 15, 18.00, 1, 2, 'JKL30', 'Entregue', 3, 5);
+
+
+-- Criação da tabela Produto com colunas para armazenar informações do produto
+CREATE TABLE Produto (
+    idProduto INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Categoria ENUM('Roupas de cama','Roupas de mesa','Roupas de banho','Utensílios para o lar','Brinquedos') NOT NULL, -- Categoria do produto
+    Nome VARCHAR(45) NOT NULL, -- Nome do produto
+    Descrição VARCHAR(45), -- Descrição do produto
+    Preco DECIMAL(10, 2) NOT NULL, -- Preço do produto
+    Quantidade INT NOT NULL, -- Quantidade em estoque
+    Fornecedor_idFornecedor INT, -- Chave estrangeira referenciando Fornecedor
+    FOREIGN KEY (Fornecedor_idFornecedor) REFERENCES Fornecedor(idFornecedor) -- Definição da chave estrangeira
+);
+
+-- Inserindo registros fictícios na tabela Produto
+INSERT INTO Produto (Categoria, Nome, Descrição, Preco, Quantidade, Fornecedor_idFornecedor) VALUES
+('Roupas de cama', 'Lençol', 'Lençol de algodão', 50.00, 100, 1),
+('Roupas de mesa', 'Toalha de mesa', 'Toalha de mesa de linho', 80.00, 50, 2),
+('Roupas de banho', 'Toalha de banho', 'Toalha de banho de algodão', 30.00, 200, 3),
+('Utensílios para o lar', 'Panela', 'Panela de ferro', 120.00, 30, 4),
+('Brinquedos', 'Boneca', 'Boneca de pano', 40.00, 150, 5),
+('Roupas de cama', 'Cobertor', 'Cobertor de lã', 100.00, 80, 6),
+('Roupas de mesa', 'Guardanapo', 'Guardanapo de papel', 10.00, 300, 7),
+('Roupas de banho', 'Roupão', 'Roupão de banho', 150.00, 20, 8),
+('Utensílios para o lar', 'Talheres', 'Conjunto de talheres', 200.00, 40, 9),
+('Brinquedos', 'Carrinho', 'Carrinho de brinquedo', 60.00, 100, 10),
+('Roupas de cama', 'Travesseiro', 'Travesseiro de plumas', 70.00, 120, 1),
+('Roupas de mesa', 'Jogo Americano', 'Jogo Americano de algodão', 25.00, 200, 2),
+('Roupas de banho', 'Tapete de Banheiro', 'Tapete de banheiro de algodão', 35.00, 150, 3),
+('Utensílios para o lar', 'Frigideira', 'Frigideira antiaderente', 90.00, 50, 4),
+('Brinquedos', 'Quebra-cabeça', 'Quebra-cabeça de 1000 peças', 45.00, 80, 5),
+('Roupas de cama', 'Edredom', 'Edredom de microfibra', 150.00, 60, 6),
+('Roupas de mesa', 'Toalha de mesa redonda', 'Toalha de mesa de linho redonda', 85.00, 40, 7),
+('Roupas de banho', 'Toalha de rosto', 'Toalha de rosto de algodão', 15.00, 250, 8),
+('Utensílios para o lar', 'Jogo de panelas', 'Jogo de panelas de inox', 300.00, 20, 9),
+('Brinquedos', 'Ursinho de pelúcia', 'Ursinho de pelúcia macio', 35.00, 200, 10);
+
+-- Criação da tabela Fornecedor com colunas para armazenar informações do fornecedor
+CREATE TABLE Fornecedor (
+    idFornecedor INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Razão_Social VARCHAR(45) NOT NULL, -- Razão social do fornecedor
+    CNPJ VARCHAR(45) NOT NULL UNIQUE, -- CNPJ do fornecedor (não nulo e único)
+    Endereço VARCHAR(45) NOT NULL, -- Endereço do fornecedor (não nulo)
+    Bairro VARCHAR(45) NOT NULL, -- Bairro do fornecedor (não nulo)
+    Cidade VARCHAR(45) NOT NULL, -- Cidade do fornecedor (não nulo)
+    Fone VARCHAR(45) NOT NULL UNIQUE, -- Telefone do fornecedor (não nulo e único)
+    Email VARCHAR(45) NOT NULL UNIQUE -- Email do fornecedor (não nulo e único)
+);
+
+-- Inserindo registros fictícios na tabela Fornecedor
+INSERT INTO Fornecedor (Razão_Social, CNPJ, Endereço, Bairro, Cidade, Fone, Email) VALUES
+('Fornecedor A', '12345678000101', 'Av. Principal, 1000', 'Centro', 'São Paulo', '1134567890', 'contato@fornecedora.com'),
+('Fornecedor B', '23456789000102', 'Av. Secundária, 2000', 'Jardim', 'Rio de Janeiro', '2134567890', 'contato@fornecedorb.com'),
+('Fornecedor C', '34567890000103', 'Av. Terciária, 3000', 'Vila', 'Belo Horizonte', '3134567890', 'contato@fornecedorc.com'),
+('Fornecedor D', '45678900000104', 'Av. Quaternária, 4000', 'Centro', 'Curitiba', '4134567890', 'contato@fornecedord.com'),
+('Fornecedor E', '56789000000105', 'Av. Quinária, 5000', 'Bairro', 'Porto Alegre', '5134567890', 'contato@fornecedore.com'),
+('Fornecedor F', '67890100000106', 'Av. Sextária, 6000', 'Centro', 'São Paulo', '1134567891', 'contato@fornecedorf.com'),
+('Fornecedor G', '78901200000107', 'Av. Setenária, 7000', 'Jardim', 'Rio de Janeiro', '2134567891', 'contato@fornecedorg.com'),
+('Fornecedor H', '89012300000108', 'Av. Oitavária, 8000', 'Vila', 'Belo Horizonte', '3134567891', 'contato@fornecedorh.com'),
+('Fornecedor I', '90123400000109', 'Av. Nona, 9000', 'Centro', 'Curitiba', '4134567891', 'contato@fornecedori.com'),
+('Fornecedor J', '01234500000110', 'Av. Décima, 10000', 'Bairro', 'Porto Alegre', '5134567891', 'contato@fornecedorj.com'),
+('Fornecedor K', '11234500000111', 'Av. Onze, 11000', 'Centro', 'São Paulo', '1134567892', 'contato@fornecedork.com'),
+('Fornecedor L', '22345600000112', 'Av. Doze, 12000', 'Jardim', 'Rio de Janeiro', '2134567892', 'contato@fornecedorl.com'),
+('Fornecedor M', '33456700000113', 'Av. Treze, 13000', 'Vila', 'Belo Horizonte', '3134567892', 'contato@fornecedorm.com'),
+('Fornecedor N', '44567800000114', 'Av. Quatorze, 14000', 'Centro', 'Curitiba', '4134567892', 'contato@fornecedorn.com'),
+('Fornecedor O', '55678900000115', 'Av. Quinze, 15000', 'Bairro', 'Porto Alegre', '5134567892', 'contato@fornecedoro.com');
+
+-- Criação da tabela Vendedor com colunas para armazenar informações do vendedor
+CREATE TABLE Vendedor (
+    idVendedor INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    PNome VARCHAR(45) NOT NULL, -- Primeiro nome do vendedor (não nulo)
+    MNome VARCHAR(45) NOT NULL, -- Nome do meio do vendedor (não nulo)
+    FNome VARCHAR(45) NOT NULL, -- Sobrenome do vendedor (não nulo)
+    CPF VARCHAR(11) NOT NULL UNIQUE, -- CPF do vendedor (não nulo e único)
+    Endereço VARCHAR(45) NOT NULL, -- Endereço do vendedor (não nulo)
+    Bairro VARCHAR(45) NOT NULL, -- Bairro do vendedor (não nulo)
+    Cidade VARCHAR(45) NOT NULL, -- Cidade do vendedor (não nulo)
+    Fone VARCHAR(45) NOT NULL UNIQUE, -- Telefone do vendedor (não nulo e único)
+    Email VARCHAR(45) NOT NULL UNIQUE -- Email do vendedor (não nulo e único)
+);
+
+-- Inserindo registros fictícios na tabela Vendedor
+INSERT INTO Vendedor (PNome, MNome, FNome, CPF, Endereço, Bairro, Cidade, Fone, Email) VALUES
+('Carlos', 'Eduardo', 'Silva', '67890123456', 'Rua F, 303', 'Centro', 'São Paulo', '11987654322', 'carlos.silva@example.com'),
+('Fernanda', 'Martins', 'Oliveira', '78901234567', 'Rua G, 404', 'Jardim', 'Rio de Janeiro', '21987654322', 'fernanda.oliveira@example.com'),
+('Rafael', 'Gonçalves', 'Almeida', '89012345678', 'Rua H, 505', 'Vila', 'Belo Horizonte', '31987654322', 'rafael.almeida@example.com'),
+('Juliana', 'Barbosa', 'Pereira', '90123456789', 'Rua I, 606', 'Centro', 'Curitiba', '41987654322', 'juliana.pereira@example.com'),
+('Marcos', 'Santos', 'Fernandes', '01234567890', 'Rua J, 707', 'Bairro', 'Porto Alegre', '51987654322', 'marcos.fernandes@example.com');
