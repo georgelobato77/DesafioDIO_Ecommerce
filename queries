@@ -1,0 +1,58 @@
+-- Recuperações simples com SELECT Statement
+SELECT * FROM Cliente; -- Seleciona todos os registros da tabela Cliente
+SELECT * FROM Produto; -- Seleciona todos os registros da tabela Produto
+SELECT * FROM Pedido; -- Seleciona todos os registros da tabela Pedido
+
+-- Filtros com WHERE Statement
+SELECT * FROM Cliente WHERE Cidade = 'São Paulo'; -- Seleciona clientes da cidade de São Paulo
+SELECT * FROM Produto WHERE Categoria = 'Roupas de cama'; -- Seleciona produtos da categoria Roupas de cama
+SELECT * FROM Pedido WHERE Status_do_pedido = 'Enviado'; -- Seleciona pedidos com status Enviado
+
+-- Crie expressões para gerar atributos derivados
+SELECT Nome, Preco, Quantidade, (Preco * Quantidade) AS Preco_Total FROM Produto; -- Seleciona produtos com preço total (preço * quantidade)
+SELECT p.idPedido, p.Descrição, p.Frete, pr.Preco, p.Quantidade, (p.Frete + (pr.Preco * p.Quantidade)) AS Valor_Total
+FROM Pedido p
+JOIN Produto pr ON p.Produto_idProduto = pr.idProduto; -- Seleciona pedidos com valor total (frete + preço dos produtos)
+
+-- Defina ordenações dos dados com ORDER BY
+SELECT * FROM Cliente ORDER BY PNome; -- Seleciona todos os clientes ordenados por nome
+SELECT * FROM Produto ORDER BY Preco DESC; -- Seleciona todos os produtos ordenados por preço decrescente
+SELECT * FROM Pedido ORDER BY Data_do_pedido; -- Seleciona todos os pedidos ordenados por data do pedido
+
+-- Condições de filtros aos grupos – HAVING Statement
+SELECT Categoria, SUM(Quantidade) AS Total_Quantidade
+FROM Produto
+GROUP BY Categoria
+HAVING SUM(Quantidade) > 100; -- Seleciona categorias de produtos com quantidade total maior que 100
+
+SELECT Cidade, COUNT(*) AS Total_Clientes
+FROM Cliente
+GROUP BY Cidade
+HAVING COUNT(*) > 2; -- Seleciona cidades com mais de 2 clientes
+
+-- Crie junções entre tabelas para fornecer uma perspectiva mais complexa dos dados
+SELECT p.idPedido, p.Status_do_pedido, p.Data_do_pedido, c.PNome, c.MNome, c.FNome, pr.Nome AS Produto, p.Quantidade
+FROM Pedido p
+JOIN Cliente c ON p.Cliente_idCliente = c.idCliente
+JOIN Produto pr ON p.Produto_idProduto = pr.idProduto; -- Seleciona pedidos com informações do cliente e produto
+
+SELECT pr.Nome, pr.Descrição, pr.Preco, f.Razão_Social, f.CNPJ
+FROM Produto pr
+JOIN Fornecedor f ON pr.Fornecedor_idFornecedor = f.idFornecedor; -- Seleciona produtos com informações do fornecedor
+
+SELECT v.PNome, v.MNome, v.FNome, pr.Nome AS Produto, pr.Preco
+FROM Vendedor v
+JOIN Pedido p ON v.idVendedor = p.Cliente_idCliente
+JOIN Produto pr ON p.Produto_idProduto = pr.idProduto; -- Seleciona vendedores com informações dos produtos vendidos
+
+-- Verificar registros na tabela Fornecedor
+SELECT * FROM Fornecedor; -- Seleciona todos os registros da tabela Fornecedor
+
+-- Verificar valores de Fornecedor_idFornecedor na tabela Produto
+SELECT Fornecedor_idFornecedor FROM Produto; -- Seleciona valores de Fornecedor_idFornecedor na tabela Produto
+
+-- Verificar quantidade em estoque de cada produto
+SELECT p.Nome, p.Quantidade - IFNULL(SUM(pe.Quantidade), 0) AS Quantidade_em_Estoque
+FROM Produto p
+LEFT JOIN Pedido pe ON p.idProduto = pe.Produto_idProduto
+GROUP BY p.idProduto, p.Nome;
