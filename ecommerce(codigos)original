@@ -1,0 +1,84 @@
+-- Criação da tabela Cliente com colunas para armazenar informações do cliente
+CREATE TABLE Cliente (
+    idCliente INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Nome VARCHAR(45), -- Nome do cliente
+    Identificação VARCHAR(45), -- Identificação do cliente
+    Endereço VARCHAR(45) -- Endereço do cliente
+);
+
+-- Criação da tabela Pedido com colunas para armazenar informações do pedido
+CREATE TABLE Pedido (
+    idPedido INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Status_do_pedido ENUM('Pendente', 'Processando', 'Enviado', 'Entregue'), -- Status do pedido
+    Descrição VARCHAR(45), -- Descrição do pedido
+    Cliente_idCliente INT, -- Chave estrangeira referenciando Cliente
+    Frete FLOAT, -- Valor do frete
+    FOREIGN KEY (Cliente_idCliente) REFERENCES Cliente(idCliente) -- Definição da chave estrangeira
+);
+
+-- Criação da tabela Produto com colunas para armazenar informações do produto
+CREATE TABLE Produto (
+    idProduto INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Categoria VARCHAR(45), -- Categoria do produto
+    Nome VARCHAR(45), -- Nome do produto
+    Preco DECIMAL(10, 2) -- Preço do produto
+);
+
+-- Criação da tabela Fornecedor com colunas para armazenar informações do fornecedor
+CREATE TABLE Fornecedor (
+    idFornecedor INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Razão_Social VARCHAR(45), -- Razão social do fornecedor
+    CNPJ VARCHAR(45) -- CNPJ do fornecedor
+);
+
+-- Criação da tabela Estoque com colunas para armazenar informações do estoque
+CREATE TABLE Estoque (
+    idEstoque INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    `Local` VARCHAR(45) -- Local do estoque (usando crases por ser palavra reservada)
+);
+
+-- Criação da tabela Produto_has_Estoque para relacionar produtos com estoques
+CREATE TABLE Produto_has_Estoque (
+    Produto_idProduto INT, -- Chave estrangeira referenciando Produto
+    Estoque_idEstoque INT, -- Chave estrangeira referenciando Estoque
+    Quantidade INT, -- Quantidade de produtos no estoque
+    PRIMARY KEY (Produto_idProduto, Estoque_idEstoque), -- Chave primária composta
+    FOREIGN KEY (Produto_idProduto) REFERENCES Produto(idProduto), -- Definição da chave estrangeira
+    FOREIGN KEY (Estoque_idEstoque) REFERENCES Estoque(idEstoque) -- Definição da chave estrangeira
+);
+
+-- Criação da tabela Relação_de_Produto_pedido para relacionar produtos com pedidos
+CREATE TABLE Relação_de_Produto_pedido (
+    Produto_idProduto INT, -- Chave estrangeira referenciando Produto
+    Pedido_idPedido INT, -- Chave estrangeira referenciando Pedido
+    Quantidade VARCHAR(45), -- Quantidade de produtos no pedido
+    PRIMARY KEY (Produto_idProduto, Pedido_idPedido), -- Chave primária composta
+    FOREIGN KEY (Produto_idProduto) REFERENCES Produto(idProduto), -- Definição da chave estrangeira
+    FOREIGN KEY (Pedido_idPedido) REFERENCES Pedido(idPedido) -- Definição da chave estrangeira
+);
+
+-- Criação da tabela Terceiro_Vendedor com colunas para armazenar informações do vendedor terceiro
+CREATE TABLE Terceiro_Vendedor (
+    idTerceiro_Vendedor INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária com incremento automático
+    Razão_Social VARCHAR(45), -- Razão social do vendedor terceiro
+    `Local` VARCHAR(45) -- Local do vendedor terceiro (usando crases por ser palavra reservada)
+);
+      
+-- Criação da tabela Produtos_por_Vendedor_terceiro para relacionar produtos com vendedores terceiros
+CREATE TABLE Produtos_por_Vendedor_terceiro (
+    Terceiro_Vendedor_idTerceiro_Vendedor INT, -- Chave estrangeira referenciando Terceiro_Vendedor
+    Produto_idProduto INT, -- Chave estrangeira referenciando Produto
+    Quantidade INT, -- Quantidade de produtos do vendedor terceiro
+    PRIMARY KEY (Terceiro_Vendedor_idTerceiro_Vendedor, Produto_idProduto), -- Chave primária composta
+    FOREIGN KEY (Terceiro_Vendedor_idTerceiro_Vendedor) REFERENCES Terceiro_Vendedor(idTerceiro_Vendedor), -- Definição da chave estrangeira
+    FOREIGN KEY (Produto_idProduto) REFERENCES Produto(idProduto) -- Definição da chave estrangeira
+);
+
+-- Criação da tabela Disponibilizando_um_produto para relacionar fornecedores com produtos
+CREATE TABLE Disponibilizando_um_produto (
+    Fornecedor_idFornecedor INT, -- Chave estrangeira referenciando Fornecedor
+    Produto_idProduto INT, -- Chave estrangeira referenciando Produto
+    PRIMARY KEY (Fornecedor_idFornecedor, Produto_idProduto), -- Chave primária composta
+    FOREIGN KEY (Fornecedor_idFornecedor) REFERENCES Fornecedor(idFornecedor), -- Definição da chave estrangeira
+    FOREIGN KEY (Produto_idProduto) REFERENCES Produto(idProduto) -- Definição da chave estrangeira
+);
